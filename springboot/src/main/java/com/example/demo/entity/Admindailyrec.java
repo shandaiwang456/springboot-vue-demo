@@ -15,6 +15,7 @@ public class Admindailyrec {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String usermd5;
+    private String filmname;
     private String filmid;
     private String algor1;
     private String algor2;
