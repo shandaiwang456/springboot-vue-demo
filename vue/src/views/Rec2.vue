@@ -134,7 +134,7 @@
             },
 
             load() {
-                request.get("/admindailyrec", {
+                request.get("/admindailyrec?pageNum=2", {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
