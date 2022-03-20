@@ -1,0 +1,12 @@
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (1, '25', '让子弹飞', '姜文', '姜文 / 葛优 / 周润发', '剧情 / 喜剧 / 动作 / 西部', 'tt1533117', '2021-01-02 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (2, NULL, '爱情神话', '邵艺辉', '徐峥 / 马伊琍 / 吴越', '剧情 / 喜剧 / 爱情', 'tt16606348', '2021-01-05 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (3, NULL, '被解救的姜戈', '昆汀·塔伦蒂诺', ' 杰米·福克斯 / 莱昂纳多·迪卡普里奥', '剧情 / 动作 / 西部 / 冒险', 'tt1853728', '2021-01-19 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (4, NULL, '国产凌凌漆', '李力持 / 周星驰', '周星驰 / 袁咏仪 / 罗家英', '喜剧 / 动作', 'tt0109962', '2021-01-21 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (5, NULL, '赌圣', '元奎 / 刘镇伟', ' 周星驰 / 张敏', '喜剧 / 动作', 'tt0104147', '2021-02-01 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (6, NULL, '快餐车', '洪金宝', '成龙 / 洪金宝 / 元彪', '喜剧 / 动作', 'tt0087578', '2021-02-09 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (7, NULL, '城市猎人', '王晶', '成龙 / 王祖贤 / 邱淑贞', '喜剧 / 动作 / 爱情', 'tt0103950', '2021-03-01 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (8, NULL, '战争之王 ', '安德鲁·尼科尔', '尼古拉斯·凯奇 / 布丽姬·穆娜', '剧情 / 犯罪', 'tt0399295', '2021-03-10 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (9, NULL, '血钻', '爱德华·兹威克', '莱昂纳多·迪卡普里奥 / 杰曼·翰苏', '剧情 / 惊悚 / 冒险', 'tt0450259', '2021-04-07 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (10, NULL, '猫鼠游戏', '史蒂文·斯皮尔伯格', '莱昂纳多·迪卡普里奥 / 汤姆·汉克斯', '剧情 / 传记 / 犯罪', 'tt0264464', '2021-05-11 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (11, NULL, '恐怖直播', '金秉祐', '河正宇 / 李璟荣 / 全慧珍', '剧情 / 悬疑 / 犯罪', 'tt2990738', '2021-06-13 00:00:00');
+INSERT INTO `waitlook`(`id`, `useruid`, `filmname`, `director`, `actor`, `filmtype`, `imdb`, `creattime`) VALUES (12, NULL, '心迷宫', '忻钰坤', '霍卫民 / 王笑天 / 罗芸', '剧情 / 悬疑 / 犯罪', 'tt4078856', '2021-07-19 00:00:00');
