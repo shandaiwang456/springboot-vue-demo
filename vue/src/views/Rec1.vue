@@ -1,5 +1,5 @@
 <template>
-<!--推荐算法一-->
+    <!--推荐算法一-->
     <div style="padding: 10px">
 
         <div style="margin:0;font-size: larger;text-align: left;font-weight: bolder">
@@ -13,7 +13,7 @@
 
         <el-carousel :interval="4000" type="card" height="500px">
 
-            <el-carousel-item v-for="item in fits" :key="item">
+            <el-carousel-item v-for="item in fites" :key="item">
 
                 <div style="text-align: center;height: 25px;">
                     {{ item.name }}
@@ -82,18 +82,27 @@
     import image8 from '../assets/imagefiles/8.png'
     import image9 from '../assets/imagefiles/9.png'
     import image10 from '../assets/imagefiles/10.png'
+    import request from "../utils/request";
 
+
+    const path = "http://localhost:9090/pic/"
 
     export default {
         name: "Rec1",
+
+        created() {
+            this.load();
+        },
+
         data() {
             return {
 
-                fits: [{name: '功夫', cover: image1}, {name: '让子弹飞', cover: image2},
-                    {name: '我不是药神', cover: image3}, {name: '两杆大烟枪', cover: image4},
-                    {name: '九品芝麻官', cover: image5}, {name: '甲方乙方', cover: image6},
-                    {name: '低俗小说', cover: image7}, {name: '荒蛮故事', cover: image8},
-                    {name: '上帝也疯狂2', cover: image9}, {name: '疯狂的石头', cover: image10},],
+                currentPage: 1,
+                pageSize: 10,
+                total: 0,
+                img: [],
+                fname:[],
+
                 form01: {},
                 dialogVisible1: false,
                 dialogVisible2: false,
@@ -103,6 +112,15 @@
             }
         },
 
+        computed: {
+            fites(){
+                return [{name: this.fname[0], cover: path+this.img[0]}, {name: this.fname[1], cover: path+this.img[1]},
+                    {name: this.fname[2], cover: path+this.img[2]}, {name: this.fname[3], cover: path+this.img[3]},
+                    {name: this.fname[4], cover: path+this.img[4]}, {name: this.fname[5], cover: path+this.img[5]},
+                    {name: this.fname[6], cover: path+this.img[6]}, {name: this.fname[7], cover: path+this.img[7]},
+                    {name: this.fname[8], cover: path+this.img[8]}, {name: this.fname[9], cover: path+this.img[9]},];
+            }
+        },
 
         methods: {
             check() {
@@ -117,7 +135,24 @@
                 this.form02 = {}
             },
 
-
+            load() {
+                request.get("/admindailyrec", {
+                    params: {
+                        pageNum: this.currentPage,
+                        pageSize: this.pageSize,
+                        search: this.search
+                    }
+                }).then(res => {
+                    console.log(res.data.size)
+                    console.log(res.data)
+                    for(var i=0; i<res.data.size; i++){
+                        this.img[i] = res.data.records[i].filmid+'.jpeg'
+                        this.fname[i] = res.data.records[i].filmname
+                        console.log(res.data.records[i].filmname)
+                    }
+                    this.total = res.data.total;
+                })
+            },
         }
     }
 </script>
