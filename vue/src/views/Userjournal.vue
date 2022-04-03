@@ -2,14 +2,14 @@
     <div style="padding: 10px">
 
         <div style="width: 400px;margin: 0 auto;">
-            <div style="color: #409EFF; font-size: 30px; text-align: center;padding: 5px 0;">用户日志</div>
+            <div style="color: #409EFF; font-size: 30px; text-align: center;padding: 5px 0;">评分记录</div>
         </div>
 
-        <el-row :gutter="12">
-            <el-col :span="600">
-                <el-card shadow="always" style="font-style: italic;color: #606266;padding: 0"> 重要提示：操作栏中1~5表示评分；-1表示稍后再看；-2表示不喜欢；您可以将相应的记录进行修改，也可以将相关记录删除，我们的数据库会为您永久保留记录。 </el-card>
-            </el-col>
-        </el-row>
+<!--        <el-row :gutter="12">-->
+<!--            <el-col :span="600">-->
+<!--                <el-card shadow="always" style="font-style: italic;color: #606266;padding: 0"> 重要提示：操作栏中1~5表示评分；-1表示稍后再看；-2表示不喜欢；您可以将相应的记录进行修改，也可以将相关记录删除，我们的数据库会为您永久保留记录。 </el-card>-->
+<!--            </el-col>-->
+<!--        </el-row>-->
 
         <el-table :data="tableData"
                   :header-cell-style="{'text-align':'center'}"
@@ -20,7 +20,7 @@
 
             <el-table-column prop="filmid" label="电影ID"/>
             <el-table-column prop="filmname" label="电影名称"/>
-            <el-table-column prop="rate" label="操作"/>
+            <el-table-column prop="rate" label="评分"/>
             <el-table-column prop="updatetime" label="创建时间"/>
 
             <el-table-column label="选项" width="200">
@@ -62,7 +62,7 @@
                     </el-form-item>
 
 
-                    <el-form-item label="操作">
+                    <el-form-item label="评分">
                         <el-input v-model="form.rate" style="width: 80%"></el-input>
                     </el-form-item>
 
@@ -102,6 +102,7 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                md5: '',
 
                 tableData: []
             }
@@ -115,20 +116,22 @@
         methods: {
             // 函数
             load() {
-                request.get("/userjournal", {
+                this.md5 = localStorage.getItem("usermd5")
+                request.get("/rate", {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
-                        search: this.search
+                        search: this.md5
                         // search:"21a11752558fa7b126e58a2780c08e65"
                         // 暂时折衷方案，写上uid 进行生成 userjournal
 
                     }
                 }).then(res => {
                     console.log(res);
-                    this.tableData = res.data.records;
-                    this.total = res.data.total;
-
+                    console.log(res.data[1])
+                    this.tableData = res.data;
+                    this.total = res.data[1].total;
+                    console.log(res.data[1].total);
                 })
             },
             add() {

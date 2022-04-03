@@ -13,16 +13,16 @@
                 <el-menu-item index="/rec2">推荐算法二</el-menu-item>
             </el-sub-menu>
 
-            <el-menu-item index="/waitlook">
-                <template #title>稍后再看</template>
-            </el-menu-item>
-
             <el-menu-item index="/searchfilm">
                 <template #title>搜索电影</template>
             </el-menu-item>
 
+            <el-menu-item index="/waitlook">
+                <template #title>稍后再看</template>
+            </el-menu-item>
+
             <el-menu-item index="/userjournal">
-                <template #title>日志管理</template>
+                <template #title>评分记录</template>
             </el-menu-item>
 
             <el-menu-item index="/userroom">

@@ -27,8 +27,8 @@
 
             <el-table-column prop="filmid" label="电影ID"/>
 
-            <el-table-column prop="algor1" label="算法一"/>
-            <el-table-column prop="algor2" label="算法二"/>
+            <el-table-column prop="algor" label="算法"/>
+<!--            <el-table-column prop="algor2" label="算法二"/>-->
             <el-table-column prop="recommendtime" label="推荐日期"/>
 
 
@@ -75,8 +75,8 @@
                         <el-input v-model="form.filmid" style="width: 80%"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="算法一">
-                        <el-input v-model="form.algor1" style="width: 80%"></el-input>
+                    <el-form-item label="算法">
+                        <el-input v-model="form.algor" style="width: 80%"></el-input>
                     </el-form-item>
 
                     <el-form-item label="算法二">
@@ -121,6 +121,7 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                // algor: '',
 
                 tableData: [],
                 options :[{value: 'Option1', label: '用户ID',}, {value: 'Option2', label: '电影ID',},
@@ -141,7 +142,8 @@
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
-                        search: this.search
+                        search: this.search,
+                        // algor: this.algor
                     }
                 }).then(res => {
                     console.log(res);

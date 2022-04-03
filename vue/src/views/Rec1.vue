@@ -102,6 +102,8 @@
                 total: 0,
                 img: [],
                 fname:[],
+                algor: 1,
+                md5: 1,
 
                 form01: {},
                 dialogVisible1: false,
@@ -136,19 +138,18 @@
             },
 
             load() {
+                this.md5 = localStorage.getItem("usermd5")
                 request.get("/admindailyrec", {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
-                        search: this.search
+                        search: this.md5,
+                        algor: 1
                     }
                 }).then(res => {
-                    console.log(res.data.size)
-                    console.log(res.data)
                     for(var i=0; i<res.data.size; i++){
                         this.img[i] = res.data.records[i].filmid+'.jpeg'
                         this.fname[i] = res.data.records[i].filmname
-                        console.log(res.data.records[i].filmname)
                     }
                     this.total = res.data.total;
                 })

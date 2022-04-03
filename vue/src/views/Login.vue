@@ -33,6 +33,7 @@
         data() {
             return {
                 form: {},
+                // usermd5: 0,
             }
         },
         methods: {
@@ -44,6 +45,7 @@
                             this.$message.success("登录成功");
                             // 登录成功需要页面跳转
                             this.$router.push("/");
+                            localStorage.setItem("usermd5", res.data.usermd5)
                         } else if (res.code === '-2') {
                             // code代码-2 表示管理员
                             this.$message.success("管理员登录成功");

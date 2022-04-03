@@ -116,6 +116,7 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                md5: '',
 
                 tableData: []
             }
@@ -129,11 +130,12 @@
         methods: {
             // 函数
             load() {
+                this.md5 = localStorage.getItem("usermd5")
                 request.get("/waitlook", {
                     params: {
                         pageNum: this.currentPage,
                         pageSize: this.pageSize,
-                        search: this.search
+                        search: this.md5
                     }
                 }).then(res => {
                     console.log(res);

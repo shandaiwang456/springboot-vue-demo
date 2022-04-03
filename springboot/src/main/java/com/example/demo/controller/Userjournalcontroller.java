@@ -42,7 +42,7 @@ public class Userjournalcontroller {
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
         // 载入 load 传参包括：pageNum: this.currentPage,pageSize: this.pageSize,
-        Page<Userjournal> UserjournalPage = UserjournalMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<Userjournal>lambdaQuery().like(Userjournal::getFilmname, search));
+        Page<Userjournal> UserjournalPage = UserjournalMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<Userjournal>lambdaQuery().like(Userjournal::getUid, search));
         return Result.success(UserjournalPage);
     }
 

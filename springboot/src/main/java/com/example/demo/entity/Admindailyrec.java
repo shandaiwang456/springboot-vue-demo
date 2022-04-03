@@ -19,6 +19,7 @@ public class Admindailyrec {
     private String filmid;
     private String algor1;
     private String algor2;
+    private String algor;
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     // 用于修改时间格式
     private Date recommendtime;

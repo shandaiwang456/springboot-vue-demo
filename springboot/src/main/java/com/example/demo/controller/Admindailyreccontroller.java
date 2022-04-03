@@ -40,9 +40,10 @@ public class Admindailyreccontroller {
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
-                              @RequestParam(defaultValue = "") String search) {
+                              @RequestParam(defaultValue = "") String search,
+                              @RequestParam(defaultValue = "") String algor) {
         // 载入 load 传参包括：pageNum: this.currentPage,pageSize: this.pageSize,
-        Page<Admindailyrec> AdmindailyrecPage = AdmindailyrecMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<Admindailyrec>lambdaQuery().like(Admindailyrec::getUsermd5, search));
+        Page<Admindailyrec> AdmindailyrecPage = AdmindailyrecMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<Admindailyrec>lambdaQuery().like(Admindailyrec::getUsermd5, search).like(Admindailyrec::getAlgor, algor));
         return Result.success(AdmindailyrecPage);
     }
 

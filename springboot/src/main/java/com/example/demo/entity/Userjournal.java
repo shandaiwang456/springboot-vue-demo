@@ -26,6 +26,7 @@ public class Userjournal {
     private String filmid;
     private String filmname;
     private String rate;
+    private long total;
 
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     // 用于修改时间格式

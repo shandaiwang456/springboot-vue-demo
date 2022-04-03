@@ -69,7 +69,7 @@ public class Usercontroller {
             return Result.error("-2", "管理员登录");
         }
 
-        return Result.success();
+        return Result.success(res);
         // 返回的 res.code 是 0
     }
 

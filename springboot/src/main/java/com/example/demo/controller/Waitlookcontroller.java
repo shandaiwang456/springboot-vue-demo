@@ -42,7 +42,7 @@ public class Waitlookcontroller {
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search) {
         // 载入 load 传参包括：pageNum: this.currentPage,pageSize: this.pageSize,
-        Page<Waitlook> WaitlookPage = WaitlookMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<Waitlook>lambdaQuery().like(Waitlook::getFilmname, search));
+        Page<Waitlook> WaitlookPage = WaitlookMapper.selectPage(new Page<>(pageNum, pageSize), Wrappers.<Waitlook>lambdaQuery().like(Waitlook::getUseruid, search));
         return Result.success(WaitlookPage);
     }
 
