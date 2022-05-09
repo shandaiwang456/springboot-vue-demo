@@ -46,4 +46,10 @@ public class Filmcontroller {
         return Result.success(FilmPage);
     }
 
+    @GetMapping("/{id}")
+    public Result<?> get(@PathVariable Long id) {
+        // 增 && 查
+        Film film = FilmMapper.selectById(id);
+        return Result.success(film);
+    }
 }

@@ -9,8 +9,8 @@
 
             <el-sub-menu index="recommendation">
                 <template #title>电影推荐</template>
-                <el-menu-item index="/rec1">推荐算法一</el-menu-item>
-                <el-menu-item index="/rec2">推荐算法二</el-menu-item>
+                <el-menu-item index="/rec1">MFL推荐算法</el-menu-item>
+                <el-menu-item index="/rec2">DBM推荐算法</el-menu-item>
             </el-sub-menu>
 
             <el-menu-item index="/searchfilm">

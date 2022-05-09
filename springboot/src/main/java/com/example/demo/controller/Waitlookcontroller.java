@@ -8,6 +8,7 @@ import com.example.demo.mapper.WaitlookMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/waitlook")
@@ -19,6 +20,8 @@ public class Waitlookcontroller {
     @PostMapping
     public Result<?> save(@RequestBody Waitlook Waitlook) {
         // 增 && 查
+        Waitlook.setCreattime(new Date());
+        System.out.println("[Waitlook]<save> "+Waitlook.getImdb());
         WaitlookMapper.insert(Waitlook);
         return Result.success();
     }
@@ -33,6 +36,7 @@ public class Waitlookcontroller {
     @DeleteMapping("/{id}")
     public Result<?> update(@PathVariable Long id) {
         // 删
+        System.out.println(id);
         WaitlookMapper.deleteById(id);
         return Result.success();
     }

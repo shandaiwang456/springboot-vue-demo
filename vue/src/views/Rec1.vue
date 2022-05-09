@@ -27,10 +27,10 @@
 
                 <div style="height: 25px;text-align: center;">
                     <!--                    background-color: #cccccc-->
-                    <el-button type="primary" @click="check">查看详情</el-button>
-                    <el-button type="primary" @click="rate">给它评分</el-button>
+                    <el-button type="primary" @click="check(item)">查看详情</el-button>
+                    <el-button type="primary" @click="show(item)">给它评分</el-button>
                     <el-button type="primary">稍后再看</el-button>
-                    <el-button type="danger">我不喜欢</el-button>
+                    <el-button type="danger" @click="dislike(item)">我不喜欢</el-button>
                 </div>
 
             </el-carousel-item>
@@ -44,20 +44,29 @@
 
             <template #footer>
                   <span class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取消</el-button>
+                    <el-button @click="dialogVisible1 = false">取消</el-button>
                     <el-button type="primary" @click="save">确 定</el-button>
                   </span>
             </template>
         </el-dialog>
 
-        <el-dialog v-model="dialogVisible2" title="评分" width="30%">
+        <el-dialog v-model="dialogVisible_rate" title="评分" width="30%">
 
-            <h3>{{ this.filmname }}</h3>
+            <!--            <h3>{{ this.filmname }}</h3>-->
+            <!--            <h3>{{img[0]}}</h3>-->
+            <el-form :model="form_rate" label-width="120px">
+
+
+                <el-form-item label="分数">
+                    <el-input v-model="form_rate.point" style="width: 80%"></el-input>
+                </el-form-item>
+
+            </el-form>
 
             <template #footer>
                   <span class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="save">确 定</el-button>
+                    <el-button @click="dialogVisible_rate = false">取消</el-button>
+                    <el-button type="primary" @click="rate">确 定</el-button>
                   </span>
             </template>
         </el-dialog>
@@ -102,41 +111,159 @@
                 total: 0,
                 img: [],
                 fname:[],
-                algor: 1,
-                md5: 1,
+                algor: 2,
+                md5: localStorage.getItem("usermd5"),
+                fid: 1,
+                ffid: [],
 
-                form01: {},
+
+                dialogVisible: false,
                 dialogVisible1: false,
-                dialogVisible2: false,
-                filmname: '影片名：功夫',
+                dialogVisible_rate: false,
+                filmname: null,
+                form_rate: {filmid:1, usermd5:localStorage.getItem("usermd5"),},
                 form02: {},
+                form: {},
+                al: {},
 
             }
         },
 
         computed: {
             fites(){
-                return [{name: this.fname[0], cover: path+this.img[0]}, {name: this.fname[1], cover: path+this.img[1]},
-                    {name: this.fname[2], cover: path+this.img[2]}, {name: this.fname[3], cover: path+this.img[3]},
-                    {name: this.fname[4], cover: path+this.img[4]}, {name: this.fname[5], cover: path+this.img[5]},
-                    {name: this.fname[6], cover: path+this.img[6]}, {name: this.fname[7], cover: path+this.img[7]},
-                    {name: this.fname[8], cover: path+this.img[8]}, {name: this.fname[9], cover: path+this.img[9]},];
-            }
+                return [{name: this.fname[0], cover: path+this.img[0], fid:this.ffid[0],}, {name: this.fname[1], cover: path+this.img[1], fid:this.ffid[0],},
+                    {name: this.fname[2], cover: path+this.img[2], fid:this.ffid[2],}, {name: this.fname[3], cover: path+this.img[3], fid:this.ffid[3],},
+                    {name: this.fname[4], cover: path+this.img[4], fid:this.ffid[4],}, {name: this.fname[5], cover: path+this.img[5], fid:this.ffid[5],},
+                    {name: this.fname[6], cover: path+this.img[6], fid:this.ffid[6],}, {name: this.fname[7], cover: path+this.img[7], fid:this.ffid[7],},
+                    {name: this.fname[8], cover: path+this.img[8], fid:this.ffid[8],}, {name: this.fname[9], cover: path+this.img[9], fid:this.ffid[9],},];
+            },
+        },
+
+        watch:{
         },
 
         methods: {
-            check() {
+            rate() {
+                if (this.form_rate.point) {
+                    console.log("fid = "+this.fid)
+                    console.log("point = "+this.form_rate.point)
+                    this.al.filmid = this.fid
+                    this.al.usermd5 = this.md5
+                    this.al.rate = this.form_rate.point
+
+                    request.get('/adminuserlog/'+this.fid+'/'+this.md5).then(res1 =>{ // 获得此前的评分记录
+                        console.log(this.al)
+                        if (res1.code == '0'){ // 有此前的评分记录
+                            console.log("already has!!!!")
+                            request.put("/adminuserlog", this.al).then(res => {
+                                if (res.code === '0') {
+                                    this.$message.success("更新成功")
+                                } else {
+                                    this.$message({
+                                        type: "error",
+                                        message: res.msg
+                                    })
+                                }
+                                this.form_rate = {}
+                                this.dialogVisible_rate = false;
+                            })
+                        }else {
+                            console.log("new!!!!!")
+                            request.post("/adminuserlog", this.al).then(res => {
+                                if (res.code === '0') {
+                                    this.$message.success("更新成功")
+                                } else {
+                                    this.$message({
+                                        type: "error",
+                                        message: res.msg
+                                    })
+                                }
+                                this.form_rate = {}
+                                this.dialogVisible_rate = false;
+                            })
+                        }
+                    })
+                }
+            },
+
+            dislike(item) {
+                this.al.filmid = item.fid
+                this.al.usermd5 = this.md5
+                this.al.rate = 1
+                console.log("fid = "+this.fid)
+
+                request.get('/adminuserlog/'+item.fid+'/'+this.md5).then(res1 =>{ // 获得此前的评分记录
+                    console.log(this.al)
+                    if (res1.code == '0'){ // 有此前的评分记录
+                        console.log("already has!!!!")
+                        request.put("/adminuserlog", this.al).then(res => {
+                            if (res.code === '0') {
+                                this.$message.success("更新成功")
+                            } else {
+                                this.$message({
+                                    type: "error",
+                                    message: res.msg
+                                })
+                            }
+                            this.form_rate = {}
+                            this.dialogVisible_rate = false;
+                        })
+                    }else {
+                        console.log("new!!!!!")
+                        request.post("/adminuserlog", this.al).then(res => {
+                            if (res.code === '0') {
+                                this.$message.success("更新成功")
+                            } else {
+                                this.$message({
+                                    type: "error",
+                                    message: res.msg
+                                })
+                            }
+                            this.form_rate = {}
+                            this.dialogVisible_rate = false;
+                        })
+                    }
+                })
+            },
+
+            addwaitlook(row){
+                this.form = JSON.parse(JSON.stringify(row));
+                this.wl.filmname = this.form.filmname
+                this.wl.imdb = this.form.imdb
+                this.wl.director = this.form.director
+                this.wl.actor = this.form.actor
+                this.wl.filmtype = this.form.filmtype
+                this.wl.useruid = localStorage.getItem("usermd5")
+                request.post('/waitlook',this.wl).then(res =>{
+                    if (res.code === '0') {
+                        this.$message.success("更新成功")
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                })
+
+            },
+
+            check(ii){
                 // this.filmname = key;
                 this.dialogVisible1 = true;
                 // 清空表单域
-                this.form01 = {}
-
+                // this.fid = ii;
+                console.log("ii = "+ii)
+                console.log(ii.fid+", "+ii.name)
+                this.filmname = ii.name
+                console.log("check()")
+                this.check2()
             },
-            rate() {
-                this.dialogVisible2 = true;
-                this.form02 = {}
+            check2(item){
+                console.log(item)
+                console.log(item.name)
+                this.form01.filmid = this.fid
+                return this.fid
             },
-
             load() {
                 this.md5 = localStorage.getItem("usermd5")
                 request.get("/admindailyrec", {
@@ -147,13 +274,27 @@
                         algor: 1
                     }
                 }).then(res => {
+                    console.log(res)
                     for(var i=0; i<res.data.size; i++){
                         this.img[i] = res.data.records[i].filmid+'.jpeg'
                         this.fname[i] = res.data.records[i].filmname
+                        this.ffid[i] = res.data.records[i].filmid
                     }
                     this.total = res.data.total;
                 })
             },
+            handleEdit(row) {
+                this.form = JSON.parse(JSON.stringify(row));
+                this.dialogVisible = true
+
+            },
+            show(item){
+                this.dialogVisible_rate = true;
+                this.fid = item.fid
+            },
+            item_index(){
+
+            }
         }
     }
 </script>
@@ -180,14 +321,3 @@
 
 
 </style>
-
-
-
-
-
-
-
-
-
-
-

@@ -34,9 +34,9 @@
 
                     <el-button size="small" type="text" @click="handleEdit(scope.row)">已看评分</el-button>
 
-                    <el-button size="small" type="text" >稍后再看</el-button>
+                    <el-button size="small" type="text" @click="addwaitlook(scope.row)">稍后再看</el-button>
 
-                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
+                    <el-popconfirm title="确认删除吗？" @confirm="disslike(scope.row)">
                         <template #reference>
                             <el-button size="small" type="text">不喜欢</el-button>
                         </template>
@@ -80,6 +80,9 @@
                         <el-input v-model="form.filmtype" style="width: 80%"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="评分">
+                        <el-input v-model="form.fpoint" style="width: 80%"></el-input>
+                    </el-form-item>
 
                     <el-form-item label="发布时间">
                         <el-date-picker v-model="form.releasetime" type="date" format="YYYY/MM/DD" style="width: 80%"></el-date-picker>
@@ -118,6 +121,8 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
+                al: {},
+                wl: {},
 
                 tableData: [],
                 options :[{value: 'Option1', label: '电影名称',}, {value: 'Option2', label: '导演',},
@@ -152,39 +157,117 @@
                 this.form = {}
             },
             save() {
-                if (this.form.id) {
-                    //更新
-                    request.put("/film", this.form).then(res => {
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message.success("更新成功")
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
-                            })
-                        }
-                        this.load();
-                        //刷新表格数据
+                request.get('/film/'+this.form.id).then(res =>{
+                    console.log(res);
+                    // 有无此电影
+                    if (res.code === '0') {
+                        request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
+                            // this.al.id = this.form.id
+                            this.al.filmid = res.data.filmid
+                            this.al.rate = this.form.fpoint
+                            this.al.total = 1
+                            this.al.usermd5 = localStorage.getItem("usermd5")
+                            console.log(this.al)
+                            if (res1.code == '0'){ // 有此前的评分记录
+                                console.log("already has!!!!")
+                                request.put("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }else {
+                                console.log("new!!!!!")
+                                request.post("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }
+                        })
                         this.dialogVisible = false
-                    })
-                } else {
-                    // 新增
-                    request.post("/film", this.form).then(res => {
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message.success("更新成功")
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
-                            })
-                        }
-                        this.load();
-                        //刷新表格数据
-                        this.dialogVisible = false
-                    })
-                }
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                })
+            },
+            disslike(row) {
+                this.form = JSON.parse(JSON.stringify(row));
+                request.get('/film/'+this.form.id).then(res =>{
+                    console.log(res);
+                    // 有无此电影
+                    if (res.code === '0') {
+                        request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
+                            // this.al.id = this.form.id
+                            this.al.filmid = res.data.filmid
+                            this.al.rate = 1
+                            this.al.total = 1
+                            this.al.usermd5 = localStorage.getItem("usermd5")
+                            console.log(this.al)
+                            if (res1.code == '0'){ // 有此前的评分记录
+                                console.log("already has!!!!")
+                                request.put("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }else {
+                                console.log("new!!!!!")
+                                request.post("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                })
+            },
+            addwaitlook(row){
+                this.form = JSON.parse(JSON.stringify(row));
+                this.wl.filmname = this.form.filmname
+                this.wl.imdb = this.form.imdb
+                this.wl.director = this.form.director
+                this.wl.actor = this.form.actor
+                this.wl.filmtype = this.form.filmtype
+                this.wl.useruid = localStorage.getItem("usermd5")
+                request.post('/waitlook',this.wl).then(res =>{
+                    if (res.code === '0') {
+                        this.$message.success("更新成功")
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                })
 
             },
             handleEdit(row) {

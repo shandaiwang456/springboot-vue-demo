@@ -34,9 +34,9 @@
 
                     <el-button size="small" type="text" @click="handleEdit(scope.row)">已看评分</el-button>
 
-                    <el-button size="small" type="text" >移出列表</el-button>
+                    <el-button size="small" type="text" @click="handleEdit1(scope.row)">移出列表</el-button>
 
-                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
+                    <el-popconfirm title="确认删除吗？" @confirm="disslike(scope.row)">
                         <template #reference>
                             <el-button size="small" type="text">不喜欢</el-button>
                         </template>
@@ -80,6 +80,10 @@
                         <el-input v-model="form.imdb" style="width: 80%"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="评分">
+                        <el-input v-model="form.fpoint" style="width: 80%"></el-input>
+                    </el-form-item>
+
                     <el-form-item label="添加时间">
                         <el-date-picker v-model="form.creattime" type="date" format="YYYY/MM/DD" style="width: 80%"></el-date-picker>
                     </el-form-item>
@@ -89,7 +93,20 @@
                 <template #footer>
                       <span class="dialog-footer">
                         <el-button @click="dialogVisible = false">取消</el-button>
-                        <el-button type="primary" @click="save">确 定</el-button>
+                        <el-button type="primary" @click="already_watch">确 定</el-button>
+                      </span>
+                </template>
+            </el-dialog>
+
+        </div>
+
+        <div style="margin: 10px 0">
+            <el-dialog v-model="dialogVisible1" title="是否删除" width="30%">
+
+                <template #footer>
+                      <span class="dialog-footer">
+                        <el-button @click="dialogVisible1 = false">取消</el-button>
+                        <el-button type="primary" @click=this.delete>确 定</el-button>
                       </span>
                 </template>
             </el-dialog>
@@ -112,11 +129,13 @@
                 // 从后台获取数据
                 form: {},
                 dialogVisible: false,
+                dialogVisible1: false,
                 search: '',
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
                 md5: '',
+                al: {},
 
                 tableData: []
             }
@@ -148,45 +167,160 @@
                 // 清空表单域
                 this.form = {}
             },
-            save() {
-                if (this.form.id) {
-                    //更新
-                    request.put("/waitlook", this.form).then(res => {
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message.success("更新成功")
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
-                            })
-                        }
-                        this.load();
-                        //刷新表格数据
-                        this.dialogVisible = false
-                    })
-                } else {
-                    // 新增
-                    request.post("/waitlook", this.form).then(res => {
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message.success("更新成功")
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
-                            })
-                        }
-                        this.load();
-                        //刷新表格数据
-                        this.dialogVisible = false
-                    })
-                }
-
+            already_watch() {
+                request.get('/film/'+this.form.id).then(res =>{
+                    console.log(res);
+                    // 有无此电影
+                    if (res.code === '0') {
+                        request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
+                            // this.al.id = this.form.id
+                            this.al.filmid = res.data.filmid
+                            this.al.rate = this.form.fpoint
+                            this.al.total = 1
+                            this.al.usermd5 = localStorage.getItem("usermd5")
+                            console.log(this.al)
+                            if (res1.code == '0'){ // 有此前的评分记录
+                                console.log("already has!!!!")
+                                request.put("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }else {
+                                console.log("new!!!!!")
+                                request.post("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                })
+            },
+            disslike(row) {
+                this.form = JSON.parse(JSON.stringify(row));
+                request.get('/film/'+this.form.id).then(res =>{
+                    console.log(res);
+                    // 有无此电影
+                    if (res.code === '0') {
+                        request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
+                            // this.al.id = this.form.id
+                            this.al.filmid = res.data.filmid
+                            this.al.rate = 1
+                            this.al.total = 1
+                            this.al.usermd5 = localStorage.getItem("usermd5")
+                            console.log(this.al)
+                            if (res1.code == '0'){ // 有此前的评分记录
+                                console.log("already has!!!!")
+                                request.put("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }else {
+                                console.log("new!!!!!")
+                                request.post("/adminuserlog", this.al).then(res => {
+                                    if (res.code === '0') {
+                                        this.$message.success("更新成功")
+                                    } else {
+                                        this.$message({
+                                            type: "error",
+                                            message: res.msg
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                })
+            },
+            // save() {
+            //     if (this.form.id) {
+            //         //更新
+            //         request.put("/waitlook", this.form).then(res => {
+            //             console.log(res);
+            //             if (res.code === '0') {
+            //                 this.$message.success("更新成功")
+            //             } else {
+            //                 this.$message({
+            //                     type: "error",
+            //                     message: res.msg
+            //                 })
+            //             }
+            //             this.load();
+            //             //刷新表格数据
+            //             this.dialogVisible = false
+            //         })
+            //     } else {
+            //         // 新增
+            //         request.post("/waitlook", this.form).then(res => {
+            //             console.log(res);
+            //             if (res.code === '0') {
+            //                 this.$message.success("更新成功")
+            //             } else {
+            //                 this.$message({
+            //                     type: "error",
+            //                     message: res.msg
+            //                 })
+            //             }
+            //             this.load();
+            //             //刷新表格数据
+            //             this.dialogVisible = false
+            //         })
+            //     }
+            //
+            // },
+            delete(){
+                console.log(this.form.id)
+                request.delete("/waitlook/"+this.form.id).then(res => {
+                    console.log(res);
+                    if (res.code === '0') {
+                        this.$message.success("更新成功")
+                    } else {
+                        this.$message({
+                            type: "error",
+                            message: res.msg
+                        })
+                    }
+                    this.load();
+                    //刷新表格数据
+                    this.dialogVisible1 = false
+                })
             },
             handleEdit(row) {
                 this.form = JSON.parse(JSON.stringify(row));
                 this.dialogVisible = true
+
+            },
+            handleEdit1(row) {
+                this.form = JSON.parse(JSON.stringify(row));
+                this.dialogVisible1 = true
 
             },
             handleSizeChange(pageSize) {

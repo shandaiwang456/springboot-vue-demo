@@ -79,11 +79,6 @@
                         <el-input v-model="form.algor" style="width: 80%"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="算法二">
-                        <el-input v-model="form.algor2" style="width: 80%"></el-input>
-                    </el-form-item>
-
-
                     <el-form-item label="推荐日期">
                         <el-date-picker v-model="form.recommendtime" type="date" format="YYYY/MM/DD" style="width: 80%"></el-date-picker>
                     </el-form-item>

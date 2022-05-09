@@ -30,7 +30,7 @@
 
                     <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
 
-                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
+                    <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row)">
                         <template #reference>
                             <el-button size="small" type="danger">删除记录</el-button>
                         </template>
@@ -103,6 +103,7 @@
                 pageSize: 10,
                 total: 0,
                 md5: '',
+                al: {},
 
                 tableData: []
             }
@@ -140,9 +141,20 @@
                 this.form = {}
             },
             save() {
-                if (this.form.id) {
+                // if (this.form.id) {
                     //更新
-                    request.put("/userjournal", this.form).then(res => {
+                    // request.get('/adminuserlog/'+this.form.filmid+'/'+localStorage.getItem("usermd5")).then(res1 => { // 获得此前的评分记录
+                    //     if (res1.code == '0') { // 有此前的评分记录
+                    //
+                    //     }
+                    // })
+                console.log("[userjournal]<save>")
+                this.al.filmid = this.form.filmid
+                this.al.rate = this.form.rate
+                this.al.total = 1
+                this.al.usermd5 = localStorage.getItem("usermd5")
+                console.log(this.al)
+                    request.put("/adminuserlog", this.al).then(res => {
                         console.log(res);
                         if (res.code === '0') {
                             this.$message.success("更新成功")
@@ -156,23 +168,23 @@
                         //刷新表格数据
                         this.dialogVisible = false
                     })
-                } else {
-                    // 新增
-                    request.post("/userjournal", this.form).then(res => {
-                        console.log(res);
-                        if (res.code === '0') {
-                            this.$message.success("更新成功")
-                        } else {
-                            this.$message({
-                                type: "error",
-                                message: res.msg
-                            })
-                        }
-                        this.load();
-                        //刷新表格数据
-                        this.dialogVisible = false
-                    })
-                }
+                // } else {
+                //     // 新增
+                //     request.post("/userjournal", this.form).then(res => {
+                //         console.log(res);
+                //         if (res.code === '0') {
+                //             this.$message.success("更新成功")
+                //         } else {
+                //             this.$message({
+                //                 type: "error",
+                //                 message: res.msg
+                //             })
+                //         }
+                //         this.load();
+                //         //刷新表格数据
+                //         this.dialogVisible = false
+                //     })
+                // }
 
             },
             handleEdit(row) {
@@ -192,10 +204,13 @@
                 this.load()
 
             },
-            handleDelete(id) {
-                console.log(id);
-
-                request.delete("/userjournal/" + id).then(res => {
+            handleDelete(row) {
+                this.form = JSON.parse(JSON.stringify(row));
+                // this.al.usermd5 = localStorage.getItem("usermd5")
+                var fid = this.form.filmid
+                var md5 = localStorage.getItem("usermd5")
+                console.log(fid+" / "+md5)
+                request.delete("/adminuserlog/"+fid+"/"+md5).then(res => {
 
                         if (res.code === '0') {
                             this.$message.success("删除成功")
