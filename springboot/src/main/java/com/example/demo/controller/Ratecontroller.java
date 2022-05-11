@@ -53,7 +53,8 @@ public class Ratecontroller {
 
             //LambdaQueryWrapper<Film> wrapper = Wrappers.<Film>lambdaQuery().like(Film::getFilmid, fid);
             QueryWrapper<Film> wrapper = new QueryWrapper<>();
-            wrapper.select("filmname").like("filmid",fid);
+            wrapper.select("filmname").eq("filmid",fid);
+            List<Film> films = filmMapper.selectList(wrapper);
             Film film = filmMapper.selectOne(wrapper);
 
             String filmname = film.getFilmname();

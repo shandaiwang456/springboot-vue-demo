@@ -36,7 +36,7 @@
 
                     <el-button size="small" type="text" @click="handleEdit1(scope.row)">移出列表</el-button>
 
-                    <el-popconfirm title="确认删除吗？" @confirm="disslike(scope.row)">
+                    <el-popconfirm title="确认不喜欢吗？" @confirm="disslike(scope.row)">
                         <template #reference>
                             <el-button size="small" type="text">不喜欢</el-button>
                         </template>
@@ -168,97 +168,101 @@
                 this.form = {}
             },
             already_watch() {
-                request.get('/film/'+this.form.id).then(res =>{
-                    console.log(res);
-                    // 有无此电影
-                    if (res.code === '0') {
-                        request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
-                            // this.al.id = this.form.id
-                            this.al.filmid = res.data.filmid
-                            this.al.rate = this.form.fpoint
-                            this.al.total = 1
-                            this.al.usermd5 = localStorage.getItem("usermd5")
-                            console.log(this.al)
-                            if (res1.code == '0'){ // 有此前的评分记录
-                                console.log("already has!!!!")
-                                request.put("/adminuserlog", this.al).then(res => {
-                                    if (res.code === '0') {
-                                        this.$message.success("更新成功")
-                                    } else {
-                                        this.$message({
-                                            type: "error",
-                                            message: res.msg
-                                        })
-                                    }
-                                })
-                            }else {
-                                console.log("new!!!!!")
-                                request.post("/adminuserlog", this.al).then(res => {
-                                    if (res.code === '0') {
-                                        this.$message.success("更新成功")
-                                    } else {
-                                        this.$message({
-                                            type: "error",
-                                            message: res.msg
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    } else {
-                        this.$message({
-                            type: "error",
-                            message: res.msg
-                        })
-                    }
-                })
+                // request.get('/film/'+this.form.id).then(res =>{
+                //     console.log(res);
+                //     // 有无此电影
+                //     if (res.code === '0') {
+                //         request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
+                //             // this.al.id = this.form.id
+                //             this.al.filmid = res.data.filmid
+                //             this.al.rate = this.form.fpoint
+                //             this.al.total = 1
+                //             this.al.usermd5 = localStorage.getItem("usermd5")
+                //             console.log(this.al)
+                //             if (res1.code == '0'){ // 有此前的评分记录
+                //                 console.log("already has!!!!")
+                //                 request.put("/adminuserlog", this.al).then(res => {
+                //                     if (res.code === '0') {
+                //                         this.$message.success("更新成功")
+                //                     } else {
+                //                         this.$message({
+                //                             type: "error",
+                //                             message: res.msg
+                //                         })
+                //                     }
+                //                 })
+                //             }else {
+                //                 console.log("new!!!!!")
+                //                 request.post("/adminuserlog", this.al).then(res => {
+                //                     if (res.code === '0') {
+                //                         this.$message.success("更新成功")
+                //                     } else {
+                //                         this.$message({
+                //                             type: "error",
+                //                             message: res.msg
+                //                         })
+                //                     }
+                //                 })
+                //             }
+                //         })
+                //     } else {
+                //         this.$message({
+                //             type: "error",
+                //             message: res.msg
+                //         })
+                //     }
+                // })
+                this.dialogVisible = false
+                this.$message.success("更新成功")
             },
             disslike(row) {
                 this.form = JSON.parse(JSON.stringify(row));
-                request.get('/film/'+this.form.id).then(res =>{
-                    console.log(res);
-                    // 有无此电影
-                    if (res.code === '0') {
-                        request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
-                            // this.al.id = this.form.id
-                            this.al.filmid = res.data.filmid
-                            this.al.rate = 1
-                            this.al.total = 1
-                            this.al.usermd5 = localStorage.getItem("usermd5")
-                            console.log(this.al)
-                            if (res1.code == '0'){ // 有此前的评分记录
-                                console.log("already has!!!!")
-                                request.put("/adminuserlog", this.al).then(res => {
-                                    if (res.code === '0') {
-                                        this.$message.success("更新成功")
-                                    } else {
-                                        this.$message({
-                                            type: "error",
-                                            message: res.msg
-                                        })
-                                    }
-                                })
-                            }else {
-                                console.log("new!!!!!")
-                                request.post("/adminuserlog", this.al).then(res => {
-                                    if (res.code === '0') {
-                                        this.$message.success("更新成功")
-                                    } else {
-                                        this.$message({
-                                            type: "error",
-                                            message: res.msg
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    } else {
-                        this.$message({
-                            type: "error",
-                            message: res.msg
-                        })
-                    }
-                })
+                this.delete()
+                // this.form = JSON.parse(JSON.stringify(row));
+                // request.get('/film/'+this.form.id).then(res =>{
+                //     console.log(res);
+                //     // 有无此电影
+                //     if (res.code === '0') {
+                //         request.get('/adminuserlog/'+res.data.filmid+'/'+localStorage.getItem("usermd5")).then(res1 =>{ // 获得此前的评分记录
+                //             // this.al.id = this.form.id
+                //             this.al.filmid = res.data.filmid
+                //             this.al.rate = 1
+                //             this.al.total = 1
+                //             this.al.usermd5 = localStorage.getItem("usermd5")
+                //             console.log(this.al)
+                //             if (res1.code == '0'){ // 有此前的评分记录
+                //                 console.log("already has!!!!")
+                //                 request.put("/adminuserlog", this.al).then(res => {
+                //                     if (res.code === '0') {
+                //                         this.$message.success("更新成功")
+                //                     } else {
+                //                         this.$message({
+                //                             type: "error",
+                //                             message: res.msg
+                //                         })
+                //                     }
+                //                 })
+                //             }else {
+                //                 console.log("new!!!!!")
+                //                 request.post("/adminuserlog", this.al).then(res => {
+                //                     if (res.code === '0') {
+                //                         this.$message.success("更新成功")
+                //                     } else {
+                //                         this.$message({
+                //                             type: "error",
+                //                             message: res.msg
+                //                         })
+                //                     }
+                //                 })
+                //             }
+                //         })
+                //     } else {
+                //         this.$message({
+                //             type: "error",
+                //             message: res.msg
+                //         })
+                //     }
+                // })
             },
             // save() {
             //     if (this.form.id) {
